@@ -72,3 +72,17 @@ def chat_with_ai(message):
         return response['choices'][0]['message']['content']
     except Exception as e:
         return f"Error en el chat: {e}"
+    
+    #  Función principal de la app
+def food_app(image, user_message):
+    label = classify_image(image)
+    nutrients, recipe = get_nutrition_and_recipe(label)
+    ai_response = chat_with_ai(user_message if user_message else f"Dame más información sobre {label}")
+
+    result = f" **Comida detectada:** {label}\n\n"
+    result += " **Valor nutricional estimado:**\n"
+    for k, v in nutrients.items():
+        result += f"- {k}: {v}\n"
+    result += f"\n **Receta sugerida:**\n{recipe}\n"
+    result += f"\n **Chat IA:**\n{ai_response}"
+    return result
