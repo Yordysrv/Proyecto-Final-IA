@@ -27,3 +27,12 @@ if response.status_code == 200:
     food_classes = [line.strip() for line in response.text.splitlines()]
 else:
     food_classes = ["unknown"] * 101  # fallback en caso de error
+
+#Función para clasificar imagen
+def classify_image(img):
+    img_tensor = transform(img).unsqueeze(0)
+    with torch.no_grad():
+        outputs = model(img_tensor)
+        _, predicted = torch.max(outputs, 1)
+    label = food_classes[predicted.item()]
+    return label
