@@ -1,6 +1,8 @@
 import gradio as gr
-import numpy as np
+import torch
+import torchvision.transforms as transforms
+from torchvision.models import resnet50
 from PIL import Image
-import tensorflow as tf
-import openai  # si usas GPT
+import requests
+import openai
 import json
