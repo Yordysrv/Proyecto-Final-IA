@@ -86,3 +86,17 @@ def food_app(image, user_message):
     result += f"\n **Receta sugerida:**\n{recipe}\n"
     result += f"\n **Chat IA:**\n{ai_response}"
     return result
+
+# Interfaz Gradio
+interface = gr.Interface(
+    fn=food_app,
+    inputs=[
+        gr.Image(type="pil", label="Sube una imagen de comida"),
+        gr.Textbox(lines=2, placeholder="Habla con la IA sobre tu comida..."),
+    ],
+    outputs="markdown",
+    title=" NutriFood AI App",
+    description="Sube una imagen de comida y obtén información nutricional, recetas e interacción con una IA."
+)
+
+interface.launch()
