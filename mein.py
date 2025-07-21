@@ -36,3 +36,28 @@ def classify_image(img):
         _, predicted = torch.max(outputs, 1)
     label = food_classes[predicted.item()]
     return label
+ #Obtener información nutricional y receta desde Spoonacular
+def get_nutrition_and_recipe(food_name):
+    nutrition_url = f"https://api.spoonacular.com/recipes/guessNutrition?title={food_name}&apiKey={SPOONACULAR_API_KEY}"
+    recipe_url = f"https://api.spoonacular.com/recipes/complexSearch?query={food_name}&number=1&addRecipeInformation=true&apiKey={SPOONACULAR_API_KEY}"
+
+    nutri_res = requests.get(nutrition_url).json()
+    recipe_res = requests.get(recipe_url).json()
+
+    try:
+        nutrients = {
+            "Calorías": nutri_res['calories']['value'],
+            "Proteínas": nutri_res['protein']['value'],
+            "Grasas": nutri_res['fat']['value'],
+            "Carbohidratos": nutri_res['carbs']['value'],
+        }
+    except:
+        nutrients = {"Calorías": "N/A", "Proteínas": "N/A", "Grasas": "N/A", "Carbohidratos": "N/A"}
+
+    try:
+        recipe = recipe_res['results'][0]['summary']
+        recipe = recipe.replace('<b>', '').replace('</b>', '')
+    except:
+        recipe = "No se pudo generar una receta."
+
+    return nutrients, recipe
