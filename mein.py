@@ -61,3 +61,14 @@ def get_nutrition_and_recipe(food_name):
         recipe = "No se pudo generar una receta."
 
     return nutrients, recipe
+ # Chat inteligente con OpenAI (GPT)
+def chat_with_ai(message):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": message}],
+            max_tokens=200,
+        )
+        return response['choices'][0]['message']['content']
+    except Exception as e:
+        return f"Error en el chat: {e}"
