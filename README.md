@@ -1,7 +1,7 @@
 # Proyecto-de-Final-IA
 
-## Nombre
+## Nombre Yordys Rodriguez Valerio
 
-## Matrícula
+## Matrícula 15-EISN-2-045
 
-## Proyecto
+## Proyecto 
