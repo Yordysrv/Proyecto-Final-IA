@@ -10,7 +10,7 @@ import requests
 OPENAI_API_KEY = "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"
 OPENAI_ORG_ID = "org-Gpagyx25nqJdVGVZUTiZBGUY"
 
-# ✅ CONFIGURACIÓN CORRECTA
+#  CONFIGURACIÓN CORRECTA
 openai.api_key = OPENAI_API_KEY
 openai.organization = OPENAI_ORG_ID
 
