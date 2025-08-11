@@ -2,17 +2,19 @@ import gradio as gr
 import torch
 import torchvision.transforms as transforms
 from torchvision.models import resnet50
+import os
 from PIL import Image
 import openai
 import requests
+from dotenv import load_dotenv
 
 # -------- CONFIGURA TU API KEY Y ORGANIZATION ID DE OPENAI --------
-OPENAI_API_KEY = "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"
+load_dotenv()
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_ORG_ID = "org-Gpagyx25nqJdVGVZUTiZBGUY"
 
 #  CONFIGURACIÓN CORRECTA
-openai.api_key = OPENAI_API_KEY
-openai.organization = OPENAI_ORG_ID
+client = openai.OpenAI(api_key=OPENAI_API_KEY, organization=OPENAI_ORG_ID)
 
 # Cargar el modelo ResNet50
 model = resnet50(pretrained=True)
@@ -37,7 +39,15 @@ def classify_food(img):
     with torch.no_grad():
         outputs = model(img_tensor)
         _, predicted = torch.max(outputs, 1)
-    label = food_classes[predicted.item()]
+
+    idx = predicted.item()
+    print(f"[DEBUG] Predicción índice: {idx} | Total clases: {len(food_classes)}")
+
+    if 0 <= idx < len(food_classes):
+        label = food_classes[idx]
+    else:
+        label = "Clase desconocida"  # Valor por defecto si el índice es inválido
+
     return label
 
 # Información nutricional estimada
@@ -54,7 +64,7 @@ def simulate_nutrition(food_name):
 def generate_recipe_with_ai(food_name):
     prompt = f"Dame una receta sencilla y nutritiva usando {food_name} como ingrediente principal."
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",  # Cambia a "gpt-4" si tienes acceso
             messages=[
                 {"role": "system", "content": "Eres un chef experto en recetas nutritivas."},
@@ -64,13 +74,13 @@ def generate_recipe_with_ai(food_name):
             temperature=0.7,
         )
         return response['choices'][0]['message']['content']
-    except openai.error.OpenAIError as e:
+    except openai.OpenAIError as e:
         return f"Error al llamar a la API de OpenAI:\n{str(e)}"
 
 # Chat libre con la IA
 def chat_with_ai(user_message):
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",  # Cambia a "gpt-4" si tienes acceso
             messages=[
                 {"role": "system", "content": "Eres un experto en nutrición y comida."},
@@ -80,7 +90,7 @@ def chat_with_ai(user_message):
             temperature=0.7,
         )
         return response['choices'][0]['message']['content']
-    except openai.error.OpenAIError as e:
+    except openai.OpenAIError as e:
         return f" Error en respuesta IA:\n{str(e)}"
 
 # Función principal
